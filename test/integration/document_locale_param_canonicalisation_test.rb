@@ -49,13 +49,4 @@ class DocumentLocaleParamCanonicalisationTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to canonical_path
   end
-
-  # no index for detailed guides
-  test "visiting a detailed_guide with a spurious locale=en param will redirect to remove it" do
-    canonical_path = detailed_guide_path("a-detailed_guide")
-    extra_path = with_locale_param(canonical_path, 'en')
-    get extra_path
-
-    assert_redirected_to canonical_path
-  end
 end
