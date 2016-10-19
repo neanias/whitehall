@@ -151,11 +151,11 @@ This is displayed at the bottom of the page. It is also used to derive the 'Last
 ```json
 {
 	[
-	  {
-	    "public_timestamp": "2016-02-08T17:36:26+00:00",
-	    "note": "Liberia removed - Council Regulation (EC) No 872/2004 imposing financial sanctions against Liberia has been repealed with effect from 6 October 2015."
-	  },
-	  { ... }
+		{
+			"public_timestamp": "2016-02-08T17:36:26+00:00",
+			"note": "Liberia removed - Council Regulation (EC) No 872/2004 imposing financial sanctions against Liberia has been repealed with effect from 6 October 2015."
+		},
+		{ ... }
 	]
 }
 ```
@@ -178,11 +178,11 @@ See `political`.
 
 ```json
 {
-  "government": {
-    "title": "2010 to 2015 Conservative and Liberal Democrat coalition government",
-    "slug": "2010-to-2015-conservative-and-liberal-democrat-coalition-government",
-    "current": false
-  }
+	"government": {
+		"title": "2010 to 2015 Conservative and Liberal Democrat coalition government",
+		"slug": "2010-to-2015-conservative-and-liberal-democrat-coalition-government",
+		"current": false
+	}
 }
 ```
 
