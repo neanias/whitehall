@@ -1,5 +1,4 @@
 module TopicsHelper
-
   def array_of_links_to_topical_events(topical_events)
     topical_events.map { |topical_event|
       link_to topical_event.name, topical_event_path(topical_event), class: 'topical-event-link'
@@ -13,6 +12,6 @@ module TopicsHelper
   end
 
   def topic_grid_size_class(*edition_scopes)
-    "grid-size-#{edition_scopes.compact.select(&:any?).length}"
+    "grid-size-#{edition_scopes.compact.count(&:any?)}"
   end
 end

@@ -60,7 +60,7 @@ class DocumentCollection < Edition
     editions.scheduled
   end
 
-  private
+private
 
   def create_default_group
     if groups.empty?

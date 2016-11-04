@@ -10,7 +10,9 @@ module Admin
     attr_reader :options
 
     def initialize(source, current_user, options = {})
-      @source, @current_user, @options = source, current_user, options
+      @source = source
+      @current_user = current_user
+      @options = options
     end
 
     def editions(locale = nil)
@@ -59,7 +61,7 @@ module Admin
 
     def force_published_percentage
       if published_count > 0
-        (( force_published_count.to_f / published_count.to_f) * 100.0).round(2)
+        ((force_published_count.to_f / published_count.to_f) * 100.0).round(2)
       else
         0
       end
@@ -91,7 +93,7 @@ module Admin
       end
     end
 
-    private
+  private
 
     def unpaginated_editions
       return @unpaginated_editions if @unpaginated_editions
@@ -114,8 +116,8 @@ module Admin
 
     def editions_with_translations(locale = nil)
       editions_without_translations = unpaginated_editions.
-                                        includes(:unpublishing).
-                                        order("editions.updated_at DESC")
+        includes(:unpublishing).
+        order("editions.updated_at DESC")
 
       if locale
         editions_without_translations.with_translations(locale)
@@ -151,9 +153,7 @@ module Admin
     end
 
     def subtype_id
-      if options[:type] && options[:type][/\d+$/]
-        options[:type][/\d+$/].to_i
-      end
+      options[:type][/\d+$/].to_i if options[:type] && options[:type][/\d+$/]
     end
 
     def subtype_class

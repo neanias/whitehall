@@ -65,7 +65,7 @@ class Admin::ClassificationFeaturingsController < Admin::BaseController
     @classification_featuring.edition.present?
   end
 
-  private
+private
 
   def load_classification
     @classification = Classification.find(params[:topical_event_id] || params[:topic_id])
@@ -80,9 +80,9 @@ class Admin::ClassificationFeaturingsController < Admin::BaseController
       @filter.editions
     else
       @classification.editions.published
-                              .with_translations
-                              .order('editions.created_at DESC')
-                              .page(params[:page])
+        .with_translations
+        .order('editions.created_at DESC')
+        .page(params[:page])
     end
   end
 

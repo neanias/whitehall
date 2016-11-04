@@ -76,13 +76,13 @@ class CorporateInformationPage < Edition
   end
 
   def self.for_slug(slug)
-    if type = CorporateInformationPageType.find(slug)
+    if (type = CorporateInformationPageType.find(slug))
       find_by(corporate_information_page_type_id: type.id)
     end
   end
 
   def self.for_slug!(slug)
-    if type = CorporateInformationPageType.find(slug)
+    if (type = CorporateInformationPageType.find(slug))
       find_by!(corporate_information_page_type_id: type.id)
     end
   end
@@ -99,7 +99,7 @@ class CorporateInformationPage < Edition
     [owning_organisation.name, title].join(" \u2013 ")
   end
 
-  def title(locale = :en)
+  def title(_locale = :en)
     corporate_information_page_type.title(owning_organisation)
   end
 
@@ -116,7 +116,7 @@ class CorporateInformationPage < Edition
     corporate_information_page_type.try(:slug) == 'about'
   end
 
-  private
+private
 
   def string_for_slug
     nil

@@ -45,7 +45,7 @@ class PublicFacingController < ApplicationController
     render text: "Not found", status: :not_found
   end
 
-  private
+private
 
   def log_error_and_render_500(exception)
     logger.error "\n#{exception.class} (#{exception.message}):\n#{exception.backtrace.join("\n")}\n\n"
@@ -72,9 +72,7 @@ class PublicFacingController < ApplicationController
   end
 
   def set_expiry(duration = 30.minutes)
-    unless Rails.env.development?
-      expires_in(duration, public: true)
-    end
+    expires_in(duration, public: true) unless Rails.env.development?
   end
 
   def set_analytics_format

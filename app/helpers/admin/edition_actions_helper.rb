@@ -90,17 +90,17 @@ module Admin::EditionActionsHelper
       id: 'new-document-menu',
       role: 'menu',
       'aria-labelledby' => 'new-document-label'
-    ) do
+               ) do
       [Consultation, Publication, NewsArticle,
-        Speech, DetailedGuide, DocumentCollection, FatalityNotice,
-        CaseStudy, StatisticalDataSet,
-        WorldLocationNewsArticle].map do |edition_type|
+       Speech, DetailedGuide, DocumentCollection, FatalityNotice,
+       CaseStudy, StatisticalDataSet,
+       WorldLocationNewsArticle].map do |edition_type|
         content_tag(:li, class: 'masthead-menu-item') do
           link_to(edition_type.model_name.human,
             polymorphic_path([:new, :admin, edition_type.name.underscore]),
             title: "Create #{edition_type.model_name.human.titleize}",
             role: 'menuitem'
-          )
+                 )
         end if can?(:create, edition_type)
       end.compact.join.html_safe
     end
@@ -110,7 +110,7 @@ module Admin::EditionActionsHelper
     options_for_select([["All types", ""]]) + edition_type_options_for_select(user, selected) + edition_sub_type_options_for_select(selected)
   end
 
-  private
+private
 
   def edition_type_options_for_select(user, selected)
     type_options_container = Whitehall.edition_classes.map do |edition_type|
@@ -118,7 +118,7 @@ module Admin::EditionActionsHelper
         [edition_type.model_name.human.pluralize, edition_type.model_name.singular]
       end
     end
-ActiveModel::Name
+    ActiveModel::Name
     options_for_select(type_options_container, selected)
   end
 

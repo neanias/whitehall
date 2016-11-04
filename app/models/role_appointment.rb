@@ -6,15 +6,15 @@ class RoleAppointment < ActiveRecord::Base
 
   # All this nonsense is because of all the intermediary associations
   has_many :consultations,
-            ->  { where("editions.type" => Consultation) },
+            -> { where("editions.type" => Consultation) },
             through: :edition_role_appointments,
             source: :edition
   has_many :publications,
-            ->  { where("editions.type" => Publication) },
+            -> { where("editions.type" => Publication) },
             through: :edition_role_appointments,
             source: :edition
   has_many :news_articles,
-            ->  { where("editions.type" => NewsArticle) },
+            -> { where("editions.type" => NewsArticle) },
             through: :edition_role_appointments,
             source: :edition
 
@@ -52,9 +52,9 @@ class RoleAppointment < ActiveRecord::Base
   validates :role_id, :person_id, :started_at, presence: true
   validates_with Validator
 
-  scope :for_role, -> role { where(role_id: role.id) }
-  scope :for_person, -> person { where(person_id: person.id) }
-  scope :excluding, -> *ids { where("id NOT IN (?)", ids) }
+  scope :for_role, -> (role) { where(role_id: role.id) }
+  scope :for_person, -> (person) { where(person_id: person.id) }
+  scope :excluding, -> (*ids) { where("id NOT IN (?)", ids) }
   scope :current, -> {where(CURRENT_CONDITION) }
   scope :for_ministerial_roles, -> { includes(role: :organisations).merge(Role.ministerial).references(:roles) }
   scope :alphabetical_by_person, -> { includes(:person).order('people.surname', 'people.forename') }
@@ -141,7 +141,7 @@ class RoleAppointment < ActiveRecord::Base
     historical_account.present?
   end
 
-  private
+private
 
   def make_other_current_appointments_non_current
     return unless make_current

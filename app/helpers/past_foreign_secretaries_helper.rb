@@ -12,7 +12,7 @@ module PastForeignSecretariesHelper
       "charles-fox" => "Charles James Fox",
       "william-grenville" => "William Wyndham Grenville"
     }
-    people.map do |slug, name|
+    people_map = people.map do |slug, name|
       content_tag :li do
         if slug == current_person
           name.html_safe
@@ -20,6 +20,7 @@ module PastForeignSecretariesHelper
           link_to name.html_safe, past_foreign_secretary_path(id: slug)
         end
       end
-    end.join('').html_safe
+    end
+    people_map.join('').html_safe
   end
 end

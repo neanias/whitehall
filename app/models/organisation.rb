@@ -132,13 +132,13 @@ class Organisation < ActiveRecord::Base
   has_many :promotional_features
 
   has_many :featured_links, -> { order(:created_at) }, as: :linkable, dependent: :destroy
-  accepts_nested_attributes_for :featured_links, reject_if: -> attributes { attributes['url'].blank? }, allow_destroy: true
+  accepts_nested_attributes_for :featured_links, reject_if: -> (attributes) { attributes['url'].blank? }, allow_destroy: true
   validates :homepage_type, inclusion: {in: %w{news service}}
 
   accepts_nested_attributes_for :default_news_image, reject_if: :all_blank
   accepts_nested_attributes_for :organisation_roles
   accepts_nested_attributes_for :edition_organisations
-  accepts_nested_attributes_for :organisation_classifications, reject_if: -> attributes { attributes['classification_id'].blank? }, allow_destroy: true
+  accepts_nested_attributes_for :organisation_classifications, reject_if: -> (attributes) { attributes['classification_id'].blank? }, allow_destroy: true
   accepts_nested_attributes_for :offsite_links
   accepts_nested_attributes_for :featured_policies
 
@@ -184,7 +184,7 @@ class Organisation < ActiveRecord::Base
   extend FriendlyId
   friendly_id
 
-  before_destroy { |r| r.destroyable? }
+  before_destroy(&:destroyable?)
   after_save :ensure_analytics_identifier
 
   def custom_logo_selected?
@@ -217,8 +217,10 @@ class Organisation < ActiveRecord::Base
 
   scope :excluding_govuk_status_closed, -> { where("govuk_status != 'closed'") }
   scope :closed, -> { where(govuk_status: "closed") }
-  scope :with_statistics_announcements, -> { joins(:statistics_announcement_organisations)
-                                              .group('statistics_announcement_organisations.organisation_id') }
+  scope :with_statistics_announcements, -> {
+    joins(:statistics_announcement_organisations)
+      .group('statistics_announcement_organisations.organisation_id')
+  }
 
   def self.grouped_by_type(locale = I18n.locale)
     Rails.cache.fetch("filter_options/organisations/#{locale}", expires_in: 30.minutes) do
@@ -262,7 +264,7 @@ class Organisation < ActiveRecord::Base
   end
 
   def self.ordered_by_name_ignoring_prefix
-    all.sort_by { |o| o.name_without_prefix }
+    all.sort_by(&:name_without_prefix)
   end
 
   def self.with_published_editions
@@ -349,7 +351,7 @@ class Organisation < ActiveRecord::Base
   end
 
   def display_name
-    [acronym, name].detect { |s| s.present? }
+    [acronym, name].detect(&:present?)
   end
 
   def select_name
@@ -482,7 +484,7 @@ class Organisation < ActiveRecord::Base
     featured_links.limit(visible_featured_links_count)
   end
 
-  private
+private
 
   def organisations_with_services_and_information_link
     %w{

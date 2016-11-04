@@ -1,6 +1,5 @@
 class Api::PagePresenter < Struct.new(:page, :context)
-
-  def as_json(options = {})
+  def as_json(_options = {})
     {
       results: page.map(&:as_json),
       previous_page_url: previous_page_url,
@@ -10,7 +9,7 @@ class Api::PagePresenter < Struct.new(:page, :context)
       pages: page.total_pages,
       page_size: page.limit_value,
       start_index: start_index
-    }.reject { |k, v| v.nil? }
+    }.reject { |_k, v| v.nil? }
   end
 
   def links
@@ -22,26 +21,23 @@ class Api::PagePresenter < Struct.new(:page, :context)
   end
 
   def previous_page_url
-    unless page.first_page?
-      url(page: page.current_page - 1)
-    end
+    url(page: page.current_page - 1) unless page.first_page?
   end
 
   def next_page_url
-    unless page.last_page?
-      url(page: page.current_page + 1)
-    end
+    url(page: page.current_page + 1) unless page.last_page?
   end
 
   def start_index
     # current_page and start_index start at 1, not 0
     (page.current_page - 1) * page.limit_value + 1
   end
-  private
+
+private
 
   def url(override_params)
     context.url_for(context.params.merge(
-      override_params.merge(only_path: false)
+                      override_params.merge(only_path: false)
     ))
   end
 end

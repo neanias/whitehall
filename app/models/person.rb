@@ -114,12 +114,10 @@ class Person < ActiveRecord::Base
     [name, role_name, organisation].compact.join(' – ')
   end
 
-  private
+private
 
   def name_as_words(*elements)
-    elements.select { |word|
-      word.present?
-    }.join(' ')
+    elements.select(&:present?).join(' ')
   end
 
   def image_changed?

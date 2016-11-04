@@ -33,7 +33,7 @@ class Admin::WorldwideOrganisationsController < Admin::BaseController
 
   def access_info
     @access_and_opening_times = @worldwide_organisation.access_and_opening_times ||
-                                @worldwide_organisation.build_access_and_opening_times
+      @worldwide_organisation.build_access_and_opening_times
   end
 
   def set_main_office
@@ -49,7 +49,7 @@ class Admin::WorldwideOrganisationsController < Admin::BaseController
     respond_with :admin, @worldwide_organisation
   end
 
-  private
+private
 
   def find_worldwide_organisation
     @worldwide_organisation = WorldwideOrganisation.friendly.find(params[:id])

@@ -38,10 +38,9 @@ class WorldLocationsController < PublicFacingController
     end
   end
 
-  private
+private
 
   def load_world_location
     @world_location = WorldLocation.with_translations(I18n.locale).find(params[:id])
   end
-
 end

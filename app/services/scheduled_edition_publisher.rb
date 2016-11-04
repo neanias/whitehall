@@ -16,7 +16,7 @@ private
       Airbrake.notify_or_ignore(e,
         error_message: "Exception raised during scheduled publishing attempt: '#{e.message}'",
         parameters: { edition_id: edition.id }
-      )
+                               )
     else
       raise e
     end
@@ -25,7 +25,7 @@ private
   def failure_reasons
     @failure_reasons ||= [].tap do |reasons|
       reasons << 'Only scheduled editions can be published with ScheduledEditionPublisher' unless scheduled_for_publication?
-      reasons << "This edition is scheduled for publication on #{edition.scheduled_publication.to_s}, and may not be published before" if too_early_to_publish?
+      reasons << "This edition is scheduled for publication on #{edition.scheduled_publication}, and may not be published before" if too_early_to_publish?
     end
   end
 

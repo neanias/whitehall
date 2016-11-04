@@ -53,9 +53,9 @@ class AttachmentData < ActiveRecord::Base
   end
 
   def virus_status
-    if File.exists?(infected_path)
+    if File.exist?(infected_path)
       :infected
-    elsif File.exists?(clean_path)
+    elsif File.exist?(clean_path)
       :clean
     else
       :pending
@@ -77,9 +77,7 @@ class AttachmentData < ActiveRecord::Base
     if carrierwave_file.present? && carrierwave_file_changed?
       self.content_type = file.file.content_type
       self.file_size = file.file.size
-      if pdf?
-        self.number_of_pages = calculate_number_of_pages
-      end
+      self.number_of_pages = calculate_number_of_pages if pdf?
     end
   end
 
@@ -92,7 +90,7 @@ class AttachmentData < ActiveRecord::Base
     cant_be_replaced_by_self
     raise ActiveRecord::RecordInvalid, self if self.errors.any?
     self.update_column(:replaced_by_id, replacement.id)
-    AttachmentData.where(replaced_by_id: self.id).each do |ad|
+    AttachmentData.where(replaced_by_id: self.id).find_each do |ad|
       ad.replace_with!(replacement)
     end
   end
@@ -111,7 +109,7 @@ private
 
   def calculate_number_of_pages
     PDF::Reader.new(path).page_count
-  rescue PDF::Reader::MalformedPDFError, PDF::Reader::UnsupportedFeatureError => e
+  rescue PDF::Reader::MalformedPDFError, PDF::Reader::UnsupportedFeatureError
     return nil
   end
 

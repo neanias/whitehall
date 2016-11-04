@@ -25,27 +25,17 @@ class Frontend::StatisticsAnnouncementsFilter < FormObject
   end
 
   def page=(page_number)
-    if page_number.to_i > 0
-      @page = page_number.to_i
-    end
+    @page = page_number.to_i if page_number.to_i > 0
   end
 
   def to_date=(date)
     date = Chronic.parse(date, guess: :end, endian_precedence: :little) if date.is_a? String
-    @to_date = if date.present?
-      (date - 1.seconds).to_date
-    else
-      nil
-    end
+    @to_date = ((date - 1.second).to_date if date.present?)
   end
 
   def from_date=(date)
     date = Chronic.parse(date, guess: :begin, endian_precedence: :little) if date.is_a? String
-    @from_date = if date.present?
-      date.to_date
-    else
-      nil
-    end
+    @from_date = (date.to_date if date.present?)
   end
 
   def organisations=(organisations)
@@ -57,7 +47,7 @@ class Frontend::StatisticsAnnouncementsFilter < FormObject
   end
 
   def organisation_slugs
-    organisations.map &:slug
+    organisations.map(&:slug)
   end
 
   def topics=(topics)
@@ -113,6 +103,7 @@ class Frontend::StatisticsAnnouncementsFilter < FormObject
   end
 
 private
+
   def get_results
     results = provider.search(valid_filter_params.merge(page: page, per_page: RESULTS_PER_PAGE))
     if should_include_cancellations_within_preceding_month?

@@ -40,7 +40,7 @@ module Edition::Workflow
       end
 
       event :convert_to_draft do
-        transitions from: :imported, to: :draft, guard: -> edition { edition.valid_as_draft? }
+        transitions from: :imported, to: :draft, guard: -> (edition) { edition.valid_as_draft? }
       end
 
       event :delete do
@@ -108,7 +108,7 @@ module Edition::Workflow
 
   def edition_has_no_unpublished_editions
     return unless document
-    if existing_edition = document.non_published_edition
+    if (existing_edition = document.non_published_edition)
       errors.add(:base, "There is already an active #{existing_edition.state} edition for this document")
     end
   end

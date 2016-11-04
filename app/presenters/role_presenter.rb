@@ -21,14 +21,12 @@ class RolePresenter < Whitehall::Decorators::Decorator
     return [] unless ministerial?
     announcements =
       model.published_speeches.limit(10).map { |s| SpeechPresenter.new(s, context) } +
-      model.published_news_articles.limit(10).map { |na| NewsArticlePresenter.new(na, context) }
+        model.published_news_articles.limit(10).map { |na| NewsArticlePresenter.new(na, context) }
     announcements.sort_by { |a| a.public_timestamp.to_datetime }.reverse[0..9]
   end
 
   def path
-    if ministerial?
-      context.ministerial_role_path model
-    end
+    context.ministerial_role_path model if ministerial?
   end
 
   def link

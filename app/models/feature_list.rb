@@ -46,6 +46,7 @@ class FeatureList < ActiveRecord::Base
   end
 
 private
+
   def next_ordering
     (features.map(&:ordering).max || 0) + 1
   end

@@ -97,10 +97,10 @@ class HtmlAttachment < Attachment
     [locale || I18n.default_locale.to_s]
   end
 
-  private
+private
 
   def sluggable_locale?
-    locale.blank? or locale == "en"
+    locale.blank? || locale == "en"
   end
 
   def sluggable_string
@@ -108,8 +108,6 @@ class HtmlAttachment < Attachment
   end
 
   def clear_slug_if_non_english_locale
-    if locale_changed? and !sluggable_locale?
-      self.slug = nil
-    end
+    self.slug = nil if locale_changed? && !sluggable_locale?
   end
 end

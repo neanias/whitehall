@@ -1,6 +1,5 @@
 class Admin::TopicsController < Admin::ClassificationsController
-
-  private
+private
 
   def model_class
     Topic

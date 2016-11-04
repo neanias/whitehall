@@ -11,7 +11,7 @@ module Admin::OrganisationHelper
       content_tag(:div,
         organisation_role_form.text_field(:ordering, label_text: label_text, class: "ordering"),
         class: "well remove-bottom-padding"
-      )
+                 )
     end
   end
 

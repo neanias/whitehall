@@ -19,9 +19,9 @@ class HomePageList < ActiveRecord::Base
     owner = opts[:owned_by]
     name = opts[:called]
     build_if_missing = opts.has_key?(:build_if_missing) ? opts[:build_if_missing] : true
-    raise ArgumentError, "Must supply owned_by: and called: options" if (owner.nil? || name.nil?)
+    raise ArgumentError, "Must supply owned_by: and called: options" if owner.nil? || name.nil?
     scoping = where(owner_id: owner.id, owner_type: owner.class, name: name)
-    if list = scoping.first
+    if (list = scoping.first)
       list
     elsif build_if_missing
       scoping.build
@@ -52,9 +52,7 @@ class HomePageList < ActiveRecord::Base
     HomePageListItem.transaction do
       home_page_list_items.each do |home_page_list_item|
         new_ordering = items_in_order.index(home_page_list_item.item)
-        if new_ordering.nil?
-          new_ordering = items_in_order.size
-        end
+        new_ordering = items_in_order.size if new_ordering.nil?
         home_page_list_item.update_column(:ordering, new_ordering + 1)
       end
     end
@@ -64,7 +62,8 @@ class HomePageList < ActiveRecord::Base
     HomePageListItem.where(item_id: item.id, item_type: item.class).destroy_all
   end
 
-  protected
+protected
+
   def next_ordering
     (home_page_list_items.map(&:ordering).max || 0) + 1
   end
@@ -73,7 +72,8 @@ class HomePageList < ActiveRecord::Base
     new_item.ordering = next_ordering unless new_item.ordering
   end
 
-  public
+public
+
   module Container
     # Given:
     #   has_home_page_list_of :contacts
@@ -93,11 +93,14 @@ class HomePageList < ActiveRecord::Base
       plural_name = list_type.to_s
       list_name = list_type.to_s
       home_page_list_methods = Module.new do
-        protected
+                               protected
+
         define_method(:"home_page_#{plural_name}_list") do
           HomePageList.get(owned_by: self, called: list_name)
         end
-        public
+
+                               public
+
         define_method(:"has_home_page_#{plural_name}_list?") do
           HomePageList.get(owned_by: self, called: list_name, build_if_missing: false).present?
         end

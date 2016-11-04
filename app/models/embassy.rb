@@ -1,5 +1,4 @@
 class Embassy
-
   extend Forwardable
 
   def initialize(world_location)
@@ -25,12 +24,12 @@ class Embassy
   def remote_services_country
     offices = consular_services_organisations.map(&:offices).flatten
     countries = offices.map(&:country)
-    unless countries.empty? or countries.include?(@world_location)
+    unless countries.empty? || countries.include?(@world_location)
       countries.first
     end
   end
 
-  private
+private
 
   def self.embassy_high_commission_or_consulate?(office)
     ["Embassy", "Consulate", "High Commission"].include?(office.worldwide_office_type.name)

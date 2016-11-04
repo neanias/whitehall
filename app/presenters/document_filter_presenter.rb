@@ -6,13 +6,13 @@ class DocumentFilterPresenter < Struct.new(:filter, :context, :document_decorato
     as_hash(options)
   end
 
-  def as_hash(options = nil)
+  def as_hash(_options = nil)
     data = {
       count: documents.count,
       current_page: documents.current_page,
       total_pages: documents.total_pages,
       total_count: documents.total_count,
-      results: documents.map { |d| d.as_hash },
+      results: documents.map(&:as_hash),
       results_any?: documents.any?,
       result_type: result_type,
       no_results_title: context.t('document_filters.no_results.title'),
@@ -20,9 +20,7 @@ class DocumentFilterPresenter < Struct.new(:filter, :context, :document_decorato
       no_results_tna_heading: context.t('document_filters.no_results.tna_heading'),
       no_results_tna_link: context.t('document_filters.no_results.tna_link')
     }
-    if !documents.last_page? || !documents.first_page?
-      data[:more_pages?] = true
-    end
+    data[:more_pages?] = true if !documents.last_page? || !documents.first_page?
     unless documents.last_page?
       data[:next_page?] = true
       data[:next_page] = documents.current_page + 1

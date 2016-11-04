@@ -73,8 +73,6 @@ private
   end
 
   def check_edition_availability
-    if @edition.deleted?
-      render "edition_unavailable"
-    end
+    render "edition_unavailable" if @edition.deleted?
   end
 end

@@ -6,7 +6,8 @@ module Edition::AuditTrail
   end
 
   def self.acting_as(actor)
-    original_actor, Edition::AuditTrail.whodunnit = Edition::AuditTrail.whodunnit, actor
+    original_actor = Edition::AuditTrail.whodunnit
+    Edition::AuditTrail.whodunnit = actor
     yield
   ensure
     Edition::AuditTrail.whodunnit = original_actor
@@ -58,19 +59,22 @@ module Edition::AuditTrail
   end
 
   def document_audit_trail
-    document.editions.includes(versions: [:user], editorial_remarks: [:author]).order("created_at asc, id asc").map.with_index do |edition, i|
+    document.editions.includes(versions: [:user], editorial_remarks: [:author])
+      .order("created_at asc, id asc").map.with_index do |edition, i|
       edition.edition_audit_trail(i)
     end.flatten
   end
 
   def document_remarks_trail
-    document.editions.includes(editorial_remarks: [:author]).order("created_at asc, id asc").map.with_index do |edition, i|
+    document.editions.includes(editorial_remarks: [:author])
+      .order("created_at asc, id asc").map.with_index do |edition, i|
       edition.edition_remarks_trail(i)
     end.flatten
   end
 
   def document_version_trail
-    document.editions.includes(versions: [:user]).order("created_at asc, id asc").map.with_index do |edition, i|
+    document.editions.includes(versions: [:user])
+      .order("created_at asc, id asc").map.with_index do |edition, i|
       edition.edition_version_trail(i)
     end.flatten
   end
@@ -92,7 +96,7 @@ module Edition::AuditTrail
   end
 
   def publication_audit_entry
-    document_version_trail.detect { | audit_entry | audit_entry.version.state == 'published' }
+    document_version_trail.detect { |audit_entry| audit_entry.version.state == 'published' }
   end
 
   class AuditEntry
@@ -114,9 +118,9 @@ module Edition::AuditTrail
 
     def ==(other)
       other.class == self.class &&
-      other.edition_serial_number == edition_serial_number &&
-      other.edition == edition &&
-      other.object == object
+        other.edition_serial_number == edition_serial_number &&
+        other.edition == edition &&
+        other.object == object
     end
 
     def first_edition?

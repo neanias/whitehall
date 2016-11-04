@@ -95,21 +95,21 @@ module OrganisationHelper
     parents = organisation.parent_organisations.map { |parent| organisation_relationship_html(parent) }
 
     description = if parents.any?
-      case type_name
-      when 'other'
-        "#{name} works with #{parents.to_sentence}."
-      when 'non-ministerial department'
-        "#{name} is #{relationship}."
-      when 'sub-organisation'
-        "#{name} is part of #{parents.to_sentence}."
-      when 'executive non-departmental public body', 'advisory non-departmental public body', 'tribunal non-departmental public body', 'executive agency'
-        "#{name} is #{relationship}, sponsored by #{parents.to_sentence}."
-      else
-        "#{name} is #{relationship} of #{parents.to_sentence}."
-      end
-    else
-      (type_name != 'other') ? "#{name} is #{relationship}." : "#{name}"
-    end
+                    case type_name
+                    when 'other'
+                      "#{name} works with #{parents.to_sentence}."
+                    when 'non-ministerial department'
+                      "#{name} is #{relationship}."
+                    when 'sub-organisation'
+                      "#{name} is part of #{parents.to_sentence}."
+                    when 'executive non-departmental public body', 'advisory non-departmental public body', 'tribunal non-departmental public body', 'executive agency'
+                      "#{name} is #{relationship}, sponsored by #{parents.to_sentence}."
+                    else
+                      "#{name} is #{relationship} of #{parents.to_sentence}."
+                    end
+                  else
+                    (type_name != 'other') ? "#{name} is #{relationship}." : "#{name}"
+                  end
 
     description.html_safe
   end
@@ -155,7 +155,7 @@ module OrganisationHelper
     'aeiou'.include?(word_or_phrase.downcase[0])
   end
 
-  def organisation_wrapper(organisation, options = {}, &block)
+  def organisation_wrapper(organisation, _options = {}, &block)
     classes = [organisation.slug, organisation_brand_colour_class(organisation)]
     classes << organisation.organisation_type.name.parameterize if organisation.respond_to?(:organisation_type)
     content_tag_for :div, organisation, class: classes.join(" ") do
@@ -193,14 +193,12 @@ module OrganisationHelper
   end
 
   def organisations_grouped_by_type(organisations)
-    organisations.group_by(&:organisation_type).sort_by { |type, department| type.listing_position }
+    organisations.group_by(&:organisation_type).sort_by { |type, _department| type.listing_position }
   end
 
   def extra_board_member_class(organisation, i)
     clear_number = 3
-    if organisation.important_board_members > 1
-      clear_number = 4
-    end
+    clear_number = 4 if organisation.important_board_members > 1
     (i % clear_number == 0) ? 'clear-person' : ''
   end
 

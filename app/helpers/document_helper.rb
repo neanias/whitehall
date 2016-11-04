@@ -23,7 +23,7 @@ module DocumentHelper
   end
 
   def edition_organisation_class(edition)
-    if organisation = edition.sorted_organisations.first
+    if (organisation = edition.sorted_organisations.first)
       organisation.slug
     else
       'unknown_organisation'
@@ -125,7 +125,7 @@ module DocumentHelper
     end
     if attachment.hoc_paper_number.present?
       ref << content_tag(:span, "HC #{attachment.hoc_paper_number}", class: 'house_of_commons_paper_number') + ' ' +
-          content_tag(:span, attachment.parliamentary_session, class: 'parliamentary_session')
+        content_tag(:span, attachment.parliamentary_session, class: 'parliamentary_session')
     end
 
     ref.join(', ').html_safe
@@ -189,7 +189,7 @@ Please tell us:
     else
       attributes << content_tag(:span, humanized_content_type(attachment.file_extension), class: 'type')
       attributes << content_tag(:span, number_to_human_size(attachment.file_size), class: 'file-size')
-      attributes << content_tag(:span, pluralize(attachment.number_of_pages, "page") , class: 'page-length') if attachment.number_of_pages.present?
+      attributes << content_tag(:span, pluralize(attachment.number_of_pages, "page"), class: 'page-length') if attachment.number_of_pages.present?
     end
     attributes.join(', ').html_safe
   end
@@ -222,9 +222,7 @@ Please tell us:
     end
     part_of += links_to_topics
 
-    if policies.any?
-      part_of += array_of_links_to_policies(policies)
-    end
+    part_of += array_of_links_to_policies(policies) if policies.any?
 
     if document.respond_to?(:world_locations) && document.world_locations.any?
       part_of += array_of_links_to_world_locations(document.world_locations)

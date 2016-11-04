@@ -49,7 +49,7 @@ class StatisticsAnnouncement < ActiveRecord::Base
   validates :redirect_url, uri: true, allow_blank: true
   validates :redirect_url, gov_uk_url: true, allow_blank: true
   validates :title, :summary, :organisations, :topics, :creator, :current_release_date, presence: true
-  validates :cancellation_reason, presence: {  message: "must be provided when cancelling an announcement" }, if: :cancelled?
+  validates :cancellation_reason, presence: { message: "must be provided when cancelling an announcement" }, if: :cancelled?
   validates :publication_type_id,
               inclusion: {
                 in: PublicationType.statistical.map(&:id),
@@ -58,12 +58,13 @@ class StatisticsAnnouncement < ActiveRecord::Base
 
   accepts_nested_attributes_for :current_release_date, reject_if: :persisted?
 
-  scope :with_title_containing, -> *keywords {
+  scope :with_title_containing, -> (*keywords) {
     pattern = "(#{keywords.map { |k| Regexp.escape(k) }.join('|')})"
     where("statistics_announcements.title REGEXP :pattern OR statistics_announcements.slug = :slug", pattern: pattern, slug: keywords)
   }
-  scope :in_organisations, Proc.new { |organisation_ids| joins(:statistics_announcement_organisations)
-    .where(statistics_announcement_organisations: { organisation_id: organisation_ids })
+  scope :in_organisations, Proc.new { |organisation_ids|
+    joins(:statistics_announcement_organisations)
+      .where(statistics_announcement_organisations: { organisation_id: organisation_ids })
   }
   scope :published, -> { where(publishing_state: "published") }
 
@@ -84,7 +85,7 @@ class StatisticsAnnouncement < ActiveRecord::Base
               index_after: [],
               unindex_after: []
 
-  delegate  :release_date, :display_date, :confirmed?,
+  delegate :release_date, :display_date, :confirmed?,
               to: :current_release_date, allow_nil: true
 
   after_touch :publish_redirect, if: :publication_has_been_published?
@@ -110,7 +111,7 @@ class StatisticsAnnouncement < ActiveRecord::Base
 
   def self.with_topics(topic_ids)
     joins(:statistics_announcement_topics).
-    where(statistics_announcement_topics: { topic_id: topic_ids})
+      where(statistics_announcement_topics: { topic_id: topic_ids})
   end
 
   def last_change_note
@@ -201,6 +202,7 @@ class StatisticsAnnouncement < ActiveRecord::Base
 
 
 private
+
   def publication_has_been_published?
     publication && publication.published?
   end

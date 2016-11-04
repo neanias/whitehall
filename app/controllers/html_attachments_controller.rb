@@ -33,7 +33,7 @@ private
   def redirect_if_unpublished
     return if @edition
 
-    if unpublishing = Unpublishing.from_slug(slug_param, document_class)
+    if (unpublishing = Unpublishing.from_slug(slug_param, document_class))
       redirect_to unpublishing.document_path
     else
       render_not_found

@@ -1,5 +1,4 @@
 class TakePartPage < ActiveRecord::Base
-
   validates_with SafeHtmlValidator
   validates :title, :summary, presence: true, length: { maximum: 255 }
   validates :body, presence: true, length: { maximum: (16.megabytes - 1) }
@@ -42,14 +41,14 @@ class TakePartPage < ActiveRecord::Base
     return if ids_in_new_ordering.empty?
     ids_in_new_ordering = ids_in_new_ordering.map(&:to_s)
     TakePartPage.transaction do
-      TakePartPage.where(id: ids_in_new_ordering).each do |page|
+      TakePartPage.where(id: ids_in_new_ordering).find_each do |page|
         page.update_column(:ordering, ids_in_new_ordering.index(page.id.to_s) + 1)
       end
       TakePartPage.where('id NOT IN (?)', ids_in_new_ordering).update_all(ordering: ids_in_new_ordering.size + 1)
     end
   end
 
-  protected
+protected
 
   def image_changed?
     changes["carrierwave_image"].present?

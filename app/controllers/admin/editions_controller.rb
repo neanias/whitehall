@@ -100,9 +100,7 @@ class Admin::EditionsController < Admin::BaseController
     if updater.can_perform? && @edition.save_as(current_user)
       updater.perform!
 
-      if @edition.links_reports.last
-        LinksReport.queue_for!(@edition)
-      end
+      LinksReport.queue_for!(@edition) if @edition.links_reports.last
 
       @edition.convert_to_draft! if params[:speed_save_convert]
       redirect_to show_or_edit_path, saved_confirmation_notice
@@ -149,7 +147,7 @@ class Admin::EditionsController < Admin::BaseController
     end
   end
 
-  private
+private
 
   def speed_tagging?
     params[:speed_save_convert] || params[:speed_save]

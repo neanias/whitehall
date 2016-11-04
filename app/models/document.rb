@@ -57,7 +57,7 @@ class Document < ActiveRecord::Base
   end
 
   def self.at_slug(document_types, slug)
-    where(document_type: document_types, slug: slug).first
+    find_by(document_type: document_types, slug: slug)
   end
 
   def similar_slug_exists?
@@ -77,9 +77,7 @@ class Document < ActiveRecord::Base
     return if published?
 
     candidate_slug = normalize_friendly_id(new_title)
-    unless candidate_slug == slug
-      update_attributes(sluggable_string: new_title)
-    end
+    update_attributes(sluggable_string: new_title) unless candidate_slug == slug
   end
 
   def published?
@@ -107,18 +105,16 @@ class Document < ActiveRecord::Base
   end
 
   def humanized_document_type
-    document_type.underscore.gsub('_', ' ')
+    document_type.underscore.tr('_', ' ')
   end
 
-  private
+private
 
   def destroy_all_editions
     Edition.unscoped.destroy_all(document_id: self.id)
   end
 
   def ensure_document_has_a_slug
-    if slug.blank?
-      update_column(:slug, id.to_s)
-    end
+    update_column(:slug, id.to_s) if slug.blank?
   end
 end

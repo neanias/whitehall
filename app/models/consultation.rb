@@ -19,7 +19,7 @@ class Consultation < Publicationesque
 
   accepts_nested_attributes_for :consultation_participation, reject_if: :all_blank_or_empty_hashes
 
-  scope :closed, -> { where("closing_at < ?",  Time.zone.now) }
+  scope :closed, -> { where("closing_at < ?", Time.zone.now) }
   scope :closed_since, ->(time) { closed.where('closing_at >= ?', time) }
   scope :open, -> { where('closing_at >= ? AND opening_at <= ?', Time.zone.now, Time.zone.now) }
   scope :upcoming, -> { where('opening_at > ?', Time.zone.now) }
@@ -135,8 +135,8 @@ class Consultation < Publicationesque
   def search_index
     super.merge({
       has_official_document: has_official_document? || (outcome.present? && outcome.has_official_document?),
-      has_command_paper:     has_command_paper?     || (outcome.present? && outcome.has_command_paper?),
-      has_act_paper:         has_act_paper?         || (outcome.present? && outcome.has_act_paper?)
+      has_command_paper:     has_command_paper? || (outcome.present? && outcome.has_command_paper?),
+      has_act_paper:         has_act_paper? || (outcome.present? && outcome.has_act_paper?)
     })
   end
 
@@ -144,11 +144,11 @@ class Consultation < Publicationesque
     true
   end
 
-  private
+private
 
   def validate_closes_after_opens
     if closing_at && opening_at && closing_at.to_date <= opening_at.to_date
-      errors.add :closing_at,  "must be after the opening on date"
+      errors.add :closing_at, "must be after the opening on date"
     end
   end
 end

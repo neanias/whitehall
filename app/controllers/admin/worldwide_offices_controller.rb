@@ -48,13 +48,14 @@ class Admin::WorldwideOfficesController < Admin::BaseController
   is_home_page_list_controller_for :offices,
     item_type: WorldwideOffice,
     contained_by: :worldwide_organisation,
-    redirect_to: ->(container, item) { [:admin, container, WorldwideOffice] },
+    redirect_to: ->(container, _item) { [:admin, container, WorldwideOffice] },
     params_name: :worldwide_office
   def home_page_list_item
     @worldwide_office
   end
 
 private
+
   def find_worldwide_organisation
     @worldwide_organisation ||= WorldwideOrganisation.friendly.find(params[:worldwide_organisation_id])
   end
@@ -65,7 +66,7 @@ private
 
   def worldwide_office_params
     params.require(:worldwide_office)
-          .permit(:worldwide_office_type_id, :show_on_home_page,
+      .permit(:worldwide_office_type_id, :show_on_home_page,
                   service_ids: [],
                   contact_attributes: [
                     :id, :title, :contact_type_id, :comments, :recipient,

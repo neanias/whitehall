@@ -15,19 +15,17 @@ class MinisterialRoleSearchIndexObserver < ActiveRecord::Observer
     end
   end
 
-  def after_save(record)
+  def after_save(_record)
     reindex_ministerial_roles
   end
 
-  def after_destroy(record)
+  def after_destroy(_record)
     reindex_ministerial_roles
   end
 
-  private
+private
 
   def reindex_ministerial_roles
-    unless self.class.disabled
-      MinisterialRole.reindex_all
-    end
+    MinisterialRole.reindex_all unless self.class.disabled
   end
 end

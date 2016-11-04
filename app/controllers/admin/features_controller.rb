@@ -26,6 +26,7 @@ class Admin::FeaturesController < Admin::BaseController
   end
 
 private
+
   def find_feature_list
     @feature_list = FeatureList.find(params[:feature_list_id])
   end
@@ -51,5 +52,4 @@ private
   def find_offsite_link
     @feature.offsite_link = OffsiteLink.find(params[:offsite_link_id]) if params[:offsite_link_id]
   end
-
 end

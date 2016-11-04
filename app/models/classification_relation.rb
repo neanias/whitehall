@@ -30,7 +30,7 @@ class ClassificationRelation < ActiveRecord::Base
   after_destroy :destroy_inverse_relation
 
   def self.relation_for(classification_id, related_classification_id)
-    where(classification_id: classification_id, related_classification_id: related_classification_id).first
+    find_by(classification_id: classification_id, related_classification_id: related_classification_id)
   end
 
   def inverse_relation
@@ -47,8 +47,6 @@ class ClassificationRelation < ActiveRecord::Base
   end
 
   def destroy_inverse_relation
-    if inverse_relation.present?
-      inverse_relation.destroy
-    end
+    inverse_relation.destroy if inverse_relation.present?
   end
 end

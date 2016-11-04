@@ -1,8 +1,7 @@
 class DocumentHistory
   include Enumerable
 
-  class Change < Struct.new(:public_timestamp, :note)
-  end
+  Change = Struct.new(:public_timestamp, :note)
 
   attr_reader :document, :changes
 
@@ -33,7 +32,7 @@ class DocumentHistory
     changes.first.public_timestamp
   end
 
-  private
+private
 
   def document_changes
     @document_changes ||= subsequent_changes + [first_change]

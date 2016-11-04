@@ -10,7 +10,7 @@ class PublicUploadsController < ApplicationController
     end
   end
 
-  private
+private
 
   def fail
     if image? upload_path
@@ -32,7 +32,7 @@ class PublicUploadsController < ApplicationController
   end
 
   def send_file_for_mime_type
-    if mime_type = mime_type_for(upload_path)
+    if (mime_type = mime_type_for(upload_path))
       send_file real_path_for_x_accel_mapping(upload_path), type: mime_type, disposition: 'inline'
     else
       send_file real_path_for_x_accel_mapping(upload_path), disposition: 'inline'
@@ -61,12 +61,12 @@ class PublicUploadsController < ApplicationController
   end
 
   def upload_exists?(path)
-    File.exists?(path) && file_is_clean?(path)
+    File.exist?(path) && file_is_clean?(path)
   end
 
   def incoming_upload_exists?(path)
     path = path.sub(Whitehall.clean_uploads_root, Whitehall.incoming_uploads_root)
-    File.exists?(path)
+    File.exist?(path)
   end
 
   def file_is_clean?(path)

@@ -3,7 +3,7 @@ class Admin::RoleAppointmentsController < Admin::BaseController
 
   def new
     role = Role.find(params[:role_id])
-    @role_appointment = role.role_appointments.build(started_at: Date.today)
+    @role_appointment = role.role_appointments.build(started_at: Time.zone.today)
   end
 
   def create
@@ -33,12 +33,13 @@ class Admin::RoleAppointmentsController < Admin::BaseController
       @role_appointment.destroy
       redirect_to edit_admin_role_path(@role_appointment.role), notice: "Appointment has been deleted"
     else
-     flash.now[:alert] = "Appointment can not be deleted"
-     render :edit
+      flash.now[:alert] = "Appointment can not be deleted"
+      render :edit
     end
   end
 
 private
+
   def load_role_appointment
     @role_appointment = RoleAppointment.find(params[:id])
   end

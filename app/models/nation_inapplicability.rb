@@ -3,7 +3,7 @@ class NationInapplicability < ActiveRecord::Base
 
   belongs_to :edition
 
-  scope :for_nation, -> nation {
+  scope :for_nation, -> (nation) {
     where(nation_id: nation.id)
   }
 

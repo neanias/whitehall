@@ -88,15 +88,14 @@ class WorldwideOrganisation < ActiveRecord::Base
   end
 
   def primary_role
-    roles.where(type: PRIMARY_ROLES.map(&:name)).first
+    roles.find_by(type: PRIMARY_ROLES.map(&:name))
   end
 
   def secondary_role
-    roles.where(type: DeputyHeadOfMissionRole.name).first
+    roles.find_by(type: DeputyHeadOfMissionRole.name)
   end
 
   def office_staff_roles
     roles.where(type: WorldwideOfficeStaffRole.name)
   end
-
 end

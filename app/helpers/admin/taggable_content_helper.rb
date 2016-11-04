@@ -1,7 +1,6 @@
 # A bunch of helpers for efficiently generating select options for taggable
 # content, e.g. topics, organisations, etc.
 module Admin::TaggableContentHelper
-
   # Returns an Array that represents the curret set of taggable (new-world)
   # policies. Each element of the array consists of two values: the name and
   # the content id of the policy
@@ -111,7 +110,7 @@ module Admin::TaggableContentHelper
   def taggable_alternative_format_providers_container
     Rails.cache.fetch(taggable_alternative_format_providers_cache_digest, expires_in: 1.day) do
       Organisation.alphabetical.map do |o|
-        ["#{o.name} (#{o.alternative_format_contact_email.blank? ? "-" : o.alternative_format_contact_email})", o.id]
+        ["#{o.name} (#{o.alternative_format_contact_email.blank? ? '-' : o.alternative_format_contact_email})", o.id]
       end
     end
   end
@@ -121,7 +120,7 @@ module Admin::TaggableContentHelper
   # collection/group name and the ID of the group.
   def taggable_document_collection_groups_container
     Rails.cache.fetch(taggable_document_collection_groups_cache_digest, expires_in: 1.day) do
-      DocumentCollection.latest_edition.alphabetical.includes(:groups).flat_map  do |collection|
+      DocumentCollection.latest_edition.alphabetical.includes(:groups).flat_map do |collection|
         collection.groups.map { |group| ["#{collection.title} (#{group.heading})", group.id] }
       end
     end
@@ -146,7 +145,7 @@ module Admin::TaggableContentHelper
   # events. This will change if any of the Topics should change or if a new
   # topic event is added.
   def taggable_topical_events_cache_digest
-    @_taggable_topical_events_cache_digest ||=  calculate_digest(TopicalEvent.order(:id), 'topical-events')
+    @_taggable_topical_events_cache_digest ||= calculate_digest(TopicalEvent.order(:id), 'topical-events')
   end
 
   # Returns an MD5 digest representing the current set of taggable

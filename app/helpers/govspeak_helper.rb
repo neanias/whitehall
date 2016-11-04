@@ -51,10 +51,11 @@ module GovspeakHelper
 
   def html_attachment_govspeak_headers_html(attachment)
     content_tag(:ol, class: ('unnumbered' if attachment.manually_numbered_headings?)) do
-      html_attachment_govspeak_headers(attachment).reduce('') do |html, header|
+      govspeak_headers = html_attachment_govspeak_headers(attachment).reduce('') do |html, header|
         css_class = header_contains_manual_numbering?(header) ? 'numbered' : nil
-        html << content_tag(:li ,link_to(header.text, "##{header.id}"), class: css_class)
-      end.html_safe
+        html << content_tag(:li, link_to(header.text, "##{header.id}"), class: css_class)
+      end
+      govspeak_headers.html_safe
     end
   end
 
@@ -85,8 +86,8 @@ module GovspeakHelper
 
   def inline_attachment_code_tags(number)
     content_tag(:code, "!@#{number}") <<
-    ' or '.html_safe <<
-    content_tag(:code, "[InlineAttachment:#{number}]")
+      ' or '.html_safe <<
+      content_tag(:code, "[InlineAttachment:#{number}]")
   end
 
   def fraction_image(numerator, denominator)
@@ -101,7 +102,7 @@ module GovspeakHelper
     { heading_numbering: numbering_method, contact_heading_tag: 'h4' }
   end
 
-  private
+private
 
   def remove_extra_quotes_from_blockquotes(govspeak)
     Whitehall::ExtraQuoteRemover.new.remove(govspeak)
@@ -119,7 +120,7 @@ module GovspeakHelper
     govspeak = set_classes_for_charts(govspeak)
     govspeak = set_classes_for_sortable_tables(govspeak)
 
-    markup_to_nokogiri_doc(govspeak, images).tap do |nokogiri_doc|
+    markup_to_nokigiri = markup_to_nokogiri_doc(govspeak, images).tap do |nokogiri_doc|
       # post-processors
       replace_internal_admin_links_in(nokogiri_doc, &block)
       add_class_to_last_blockquote_paragraph(nokogiri_doc)
@@ -128,14 +129,15 @@ module GovspeakHelper
       elsif options[:heading_numbering] == :manual
         add_manual_heading_numbers(nokogiri_doc)
       end
-    end.to_html.html_safe
+    end
+    markup_to_nokigiri.to_html.html_safe
   end
 
   def render_embedded_contacts(govspeak, heading_tag)
     return govspeak if govspeak.blank?
     heading_tag ||= 'h3'
     govspeak.gsub(Govspeak::EmbeddedContentPatterns::CONTACT) do
-      if contact = Contact.find_by(id: $1)
+      if (contact = Contact.find_by(id: $1))
         render(partial: 'contacts/contact', locals: { contact: contact, heading_tag: heading_tag }, formats: ["html"])
       else
         ''
@@ -145,7 +147,7 @@ module GovspeakHelper
 
   def render_embedded_fractions(govspeak)
     return govspeak if govspeak.blank?
-    govspeak.gsub(GovspeakHelper::FRACTION_REGEXP) do |match|
+    govspeak.gsub(GovspeakHelper::FRACTION_REGEXP) do |_match|
       if $1.present? && $2.present?
         render(partial: 'shared/govspeak_fractions', formats: [:html], locals: { numerator: $1, denominator: $2 })
       else
@@ -191,7 +193,8 @@ module GovspeakHelper
   end
 
   def add_heading_numbers(nokogiri_doc)
-    h2_depth, h3_depth = 0, 0
+    h2_depth = 0
+    h3_depth = 0
     nokogiri_doc.css('h2, h3').each do |el|
       if el.name == 'h2'
         h3_depth = 0
@@ -205,7 +208,7 @@ module GovspeakHelper
 
   def add_manual_heading_numbers(nokogiri_doc)
     nokogiri_doc.css('h2, h3').each do |el|
-      if number = extract_number_from_heading(el)
+      if (number = extract_number_from_heading(el))
         heading_without_number = el.inner_html.gsub(number, '')
         el.inner_html = el.document.fragment(%{<span class="number">#{number} </span>#{heading_without_number}})
       end
@@ -225,14 +228,14 @@ module GovspeakHelper
 
   def govspeak_with_attachments_and_alt_format_information(govspeak, attachments = [], alternative_format_contact_email = nil)
     govspeak = govspeak.gsub(/\n{0,2}^!@([0-9]+)\s*/) do
-      if attachment = attachments[$1.to_i - 1]
+      if (attachment = attachments[Regexp.last_match(1).to_i - 1])
         "\n\n" + render(partial: "documents/attachment", formats: :html, object: attachment, locals: {alternative_format_contact_email: alternative_format_contact_email}) + "\n\n"
       else
         "\n\n"
       end
     end
     govspeak.gsub(/\[InlineAttachment:([0-9]+)\]/) do
-      if attachment = attachments[$1.to_i - 1]
+      if (attachment = attachments[Regexp.last_match(1).to_i - 1])
         render(partial: "documents/inline_attachment", formats: :html, locals: { attachment: attachment })
       else
         ""

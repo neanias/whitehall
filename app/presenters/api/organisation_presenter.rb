@@ -1,5 +1,5 @@
 class Api::OrganisationPresenter < Api::BasePresenter
-  def as_json(options = {})
+  def as_json(_options = {})
     {
       id: context.api_organisation_url(model),
       title: model.name,
@@ -29,6 +29,7 @@ class Api::OrganisationPresenter < Api::BasePresenter
   end
 
 private
+
   def parent_organisations
     model.parent_organisations.map do |parent|
       {
